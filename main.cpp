@@ -1,0 +1,109 @@
+#include<SDL2/SDL.h>
+#include<stdio.h>
+
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 960;
+
+
+SDL_Window* gWindow = NULL;
+SDL_Surface* gScreenSurface = NULL;
+SDL_Surface* gHelloWorld = NULL;
+
+
+//starts up SDL and creates window
+bool init()
+    {
+        //Initialize flag
+        bool success = true;
+
+        //Initialize SDL
+        if (SDL_Init(SDL_INIT_VIDEO) < 0)
+        {
+            printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+            success = false;
+        }
+        else
+        {
+            //create window
+            gWindow = SDL_CreateWindow ("SDL App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH ,SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+            if(gWindow == NULL)
+            {
+                printf("Window could not be created : %s\n", SDL_GetError());
+                success = false;
+            }
+            else
+            {
+                //get window surface
+                gScreenSurface = SDL_GetWindowSurface(gWindow);
+            }
+        }
+        return success;
+    }
+
+//Load Media
+bool loadMedia(){
+    //Loading success flag
+    bool success = true;
+
+    //Load splash image
+    gHelloWorld = SDL_LoadBMP( "assets/img.bmp" );
+    if( gHelloWorld == NULL )
+    {
+        printf( "Unable to load image %s! SDL Error: %s\n", "assets/img.bmp", SDL_GetError() );
+        success = false;
+    }
+
+    return success;
+}
+
+//Free media and shut down SDL
+void close()
+{
+    //Deallocate surface
+    SDL_FreeSurface( gHelloWorld );
+    gHelloWorld = NULL;
+
+    //Destroy window
+    SDL_DestroyWindow( gWindow );
+    gWindow = NULL;
+
+    //Quit SDL subsystems
+    SDL_Quit();
+}
+
+
+
+int main( int argc, char* args[] )
+{
+	
+    //Start up SDL and create window
+    if( !init() )
+    {
+        printf( "Failed to initialize!\n" );
+    }
+    else
+    {
+        //Load media
+        if( !loadMedia() )
+        {
+            printf( "Failed to load media!\n" );
+        }
+        else
+        {
+            //Apply the image
+            SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
+            //Update the surface
+            SDL_UpdateWindowSurface( gWindow );
+                        //Wait two seconds
+            SDL_Delay( 5000 );
+        }
+    }
+
+    //Free resources and close SDL
+    close();
+
+    return 0;
+
+}
