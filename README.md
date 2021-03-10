@@ -1,1 +1,1 @@
-SDL Game Development based on https://lazyfoo.net/tutorials/SDL/index.php
+ Game Programming using SDL2 based on https://lazyfoo.net/tutorials/SDL/index.php
